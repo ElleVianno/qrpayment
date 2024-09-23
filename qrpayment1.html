@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Payment Confirmation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    .payment-container {
+      max-width: 400px;
+      margin: 20px auto;
+      background-color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .profile-pic {
+      width: 100px;
+      height: 100px;
+      background-color: #ddd;
+      border-radius: 50%;
+      margin: 0 auto 15px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .profile-pic img {
+      width: 100%;
+      height: 80%;
+      border-radius: 50%;
+    }
+
+    .company-name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .amount {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    .account-container {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      text-align: center;
+      color: #595656;
+      font-size: 14px;
+    }
+
+    .account-number {
+      font-size: 18px;
+      letter-spacing: 2px;
+      margin: 10px 0;
+    }
+
+    .pay-now-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .pay-now-btn:hover {
+      background-color: #45a049;
+    }
+
+    /* Loading animation styles */
+    .loading-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.8);
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .loading-container.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-top: 4px solid #4CAF50;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+    <div class="payment-container">
+        <h2>Scan & Pay</h2>
+        <div class="profile-pic">
+          <img src="your-image.jpg" alt="Profile Picture">
+        </div>
+        <div class="company-name">KV Paradise</div>
+        <div class="amount">RM <span id="paymentAmount">0.00</span></div>
+        <div class="account-container">
+          <div class="account-info">Company Saver Account</div>
+          <div class="account-number">**** **** **** 1867</div>
+        </div>
+        <button class="pay-now-btn" onclick="proceedToNext()">Pay Now</button>
+      </div>
+
+      <div class="loading-container" id="loading">
+        <div class="spinner"></div>
+      </div>
+
+      <audio id="paymentSound" src="your-sound-file.mp3" preload="auto"></audio>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          let amount = localStorage.getItem('paymentAmount') || '0.00';
+          document.getElementById('paymentAmount').textContent = amount;
+        });
+
+        function proceedToNext() {
+          // Show loading animation
+          const loading = document.getElementById('loading');
+          loading.classList.add('show');
+
+          // Play sound
+          const paymentSound = document.getElementById('paymentSound');
+          paymentSound.play();
+
+          // Redirect after 3 seconds
+          setTimeout(() => {
+            window.location.href = 'qrpayment2.html';
+          }, 3000);
+        }
+      </script>
+
+</body>
+</html>
