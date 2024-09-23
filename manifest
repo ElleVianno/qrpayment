@@ -1,0 +1,16 @@
+{
+    "name": "Pembayaran Acah",
+    "short_name": "Pembayaran",
+    "start_url": "/qrpayment.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#4CAF50",
+    "icons": [
+      {
+        "src": "/icon-192x192.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      }
+    ]
+  }
+  
