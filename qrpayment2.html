@@ -17,27 +17,26 @@
     }
 
     .success-container {
-      width: 92%;
-      max-width: 380px;
+      width: 90%;
+      max-width: 320px;
       background-color: white;
-      padding: 40px 25px;   /* lebih panjang */
+      padding: 25px 18px;
       text-align: center;
-      border-radius: 18px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+      border-radius: 15px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
       animation: fadeIn 0.6s ease-in-out;
-      min-height: 480px;   /* bagi tinggi tetap sikit */
+      min-height: 400px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
-    /* Success icon animation */
     .success-icon {
-      width: 100px;
-      height: 100px;
+      width: 80px;
+      height: 80px;
       background-color: #4CAF50;
       border-radius: 50%;
-      margin: 0 auto 20px;
+      margin: 0 auto 15px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -46,40 +45,40 @@
 
     .success-icon:before {
       content: '✔';
-      font-size: 50px;
+      font-size: 40px;
       color: white;
     }
 
     h2 {
-      font-size: 24px;
+      font-size: 20px;
       color: #333;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       font-weight: bold;
     }
 
     .amount {
-      font-size: 28px;
+      font-size: 22px;
       font-weight: bold;
       color: #222;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
     .company-name {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
       color: #4CAF50;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
     .transaction-details {
       text-align: left;
-      font-size: 15px;
+      font-size: 14px;
       color: #666;
-      margin-bottom: 25px;
-      line-height: 1.8;
-      padding: 15px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+      padding: 12px;
       background: #f9f9f9;
-      border-radius: 10px;
+      border-radius: 8px;
     }
 
     .transaction-details span {
@@ -90,10 +89,10 @@
     .done-btn {
       background: #4CAF50;
       color: white;
-      padding: 16px 0;
+      padding: 12px 0;
       border: none;
-      border-radius: 10px;
-      font-size: 18px;
+      border-radius: 8px;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
       width: 100%;
@@ -102,6 +101,37 @@
 
     .done-btn:hover {
       background: #43a047;
+    }
+
+    /* Popup overlay */
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .overlay-message {
+      background: white;
+      padding: 25px 30px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      animation: fadeIn 0.5s ease;
     }
 
     /* Animations */
@@ -135,6 +165,13 @@
     <button class="done-btn" onclick="goToNext()">Done</button>
   </div>
 
+  <!-- Overlay popup -->
+  <div class="overlay" id="thankYouOverlay">
+    <div class="overlay-message">
+      Terima kasih kerana membeli dengan kami 💚
+    </div>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       let amount = localStorage.getItem('paymentAmount') || '0.00';
@@ -155,7 +192,13 @@
     });
 
     function goToNext() {
-      window.location.href = 'nextpage.html';
+      let overlay = document.getElementById('thankYouOverlay');
+      overlay.classList.add('show');
+
+      // Lepas 3 saat baru redirect
+      setTimeout(function() {
+        window.location.href = 'nextpage.html';
+      }, 3000);
     }
   </script>
 
