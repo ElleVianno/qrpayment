@@ -9,7 +9,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f4f4f4;
+      background: linear-gradient(135deg, #e0f7e9, #f4f4f4);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -17,110 +17,148 @@
     }
 
     .success-container {
-      width: 90%;
-      max-width: 350px;
+      width: 92%;
+      max-width: 380px;
       background-color: white;
-      padding: 20px;
+      padding: 40px 25px;   /* lebih panjang */
       text-align: center;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      margin: 0 auto;
+      border-radius: 18px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+      animation: fadeIn 0.6s ease-in-out;
+      min-height: 480px;   /* bagi tinggi tetap sikit */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
+    /* Success icon animation */
     .success-icon {
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
       background-color: #4CAF50;
       border-radius: 50%;
       margin: 0 auto 20px;
       display: flex;
       justify-content: center;
       align-items: center;
+      animation: popIn 0.5s ease;
     }
 
     .success-icon:before {
       content: '✔';
-      font-size: 40px;
+      font-size: 50px;
       color: white;
     }
 
     h2 {
-      font-size: 20px;
+      font-size: 24px;
       color: #333;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
+      font-weight: bold;
     }
 
     .amount {
-      font-size: 24px;
+      font-size: 28px;
       font-weight: bold;
+      color: #222;
       margin-bottom: 20px;
     }
 
     .company-name {
       font-size: 18px;
-      margin-bottom: 20px;
+      font-weight: bold;
+      color: #4CAF50;
+      margin-bottom: 25px;
     }
 
-    /* Align details to the left */
     .transaction-details {
       text-align: left;
-      font-size: 14px;
-      color: #888;
-      margin-bottom: 15px;
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 25px;
+      line-height: 1.8;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 10px;
     }
 
     .transaction-details span {
       font-weight: bold;
-      color: #555;
+      color: #333;
     }
 
     .done-btn {
-      background-color: #4CAF50;
+      background: #4CAF50;
       color: white;
-      padding: 12px 0;
+      padding: 16px 0;
       border: none;
-      border-radius: 5px;
+      border-radius: 10px;
       font-size: 18px;
+      font-weight: bold;
       cursor: pointer;
       width: 100%;
-      margin-top: 20px;
+      transition: background 0.3s ease;
     }
 
     .done-btn:hover {
-      background-color: #45a049;
+      background: #43a047;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
   </style>
 </head>
 <body>
 
-    <div class="success-container">
-        <div class="success-icon"></div>
-        <h2>Payment Successful</h2>
-        <div class="amount">RM <span id="paymentAmount">0.00</span></div>
-        <div class="company-name">KV Paradise</div>
-        <div class="transaction-details">
-          <p>Reference ID: <span id="referenceId">81892704</span></p>
-          <p id="dateTime">Date & Time: 1 Sep 2024, 12:35 pm</p>
-          <p>Transaction Type: <span>Scan & Pay</span></p>
-        </div>
-        <button class="done-btn" onclick="goToNext()">Done</button>
+  <div class="success-container">
+    <div>
+      <div class="success-icon"></div>
+      <h2>Payment Successful</h2>
+      <div class="amount">RM <span id="paymentAmount">0.00</span></div>
+      <div class="company-name">KV PARADISE SDN.BHD</div>
+
+      <div class="transaction-details">
+        <p>Reference ID: <span id="referenceId">81892704</span></p>
+        <p id="dateTime">Date & Time: 1 Sep 2024, 12:35 pm</p>
+        <p>Transaction Type: <span>Scan & Pay</span></p>
       </div>
-    
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          let amount = localStorage.getItem('paymentAmount') || '0.00';
-          document.getElementById('paymentAmount').textContent = amount;
-    
-          let now = new Date();
-          let options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
-          let formattedDate = now.toLocaleDateString('en-MY', options).replace(',', '');
-          document.getElementById('dateTime').textContent = `Date & Time: ${formattedDate}`;
-        });
-    
-        function goToNext() {
-          window.location.href = 'nextpage.html'; 
-        }
-      </script>
-    
-    </body>
-    </html>
+    </div>
+
+    <button class="done-btn" onclick="goToNext()">Done</button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      let amount = localStorage.getItem('paymentAmount') || '0.00';
+      document.getElementById('paymentAmount').textContent = amount;
+
+      // Auto-generate Date & Time
+      let now = new Date();
+      let options = {
+        year: 'numeric', month: 'short', day: 'numeric',
+        hour: 'numeric', minute: 'numeric', hour12: true
+      };
+      let formattedDate = now.toLocaleDateString('en-MY', options).replace(',', '');
+      document.getElementById('dateTime').textContent = `Date & Time: ${formattedDate}`;
+
+      // Random Reference ID
+      document.getElementById('referenceId').textContent =
+        Math.floor(10000000 + Math.random() * 90000000);
+    });
+
+    function goToNext() {
+      window.location.href = 'nextpage.html';
+    }
+  </script>
+
+</body>
+</html>
+
