@@ -172,7 +172,7 @@
     </div>
   </div>
 
-  <!-- Audio untuk bunyi notification (iPhone ding style) -->
+  <!-- Audio untuk bunyi notification -->
   <audio id="notifSound" 
          src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" 
          preload="auto"></audio>
@@ -195,15 +195,14 @@
       document.getElementById('referenceId').textContent =
         Math.floor(10000000 + Math.random() * 90000000);
 
-      // --- Urutan: Bunyi → Vibrate → Notification ---
+      // --- Urutan: Bunyi → Vibrate/Fake Vibrate → Notification ---
       let sound = document.getElementById('notifSound');
       sound.play().catch(()=>{});
 
       setTimeout(() => {
-        if (navigator.vibrate) {
-          navigator.vibrate([200, 100, 200]);
-        }
+        triggerVibration();
 
+        // Push Notification
         if ("Notification" in window) {
           if (Notification.permission === "granted") {
             new Notification("Payment Deducted", {
@@ -224,11 +223,42 @@
       }, 1000); // 1 saat selepas bunyi
     });
 
+    // ===== Fungsi Getar =====
+    function triggerVibration() {
+      if ("vibrate" in navigator) {
+        // Android (real vibrate)
+        navigator.vibrate([300, 150, 300]);
+        console.log("Android vibrate triggered");
+      } else {
+        // iPhone Safari (fake vibrate dengan bunyi buzz)
+        fakeVibrate();
+        console.log("Fake vibrate (iPhone) triggered");
+      }
+    }
+
+    // ===== Fake Vibrate untuk iPhone =====
+    function fakeVibrate() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = ctx.createOscillator();
+        oscillator.type = "square";
+        oscillator.frequency.setValueAtTime(60, ctx.currentTime); // buzz 60Hz
+        oscillator.connect(ctx.destination);
+        oscillator.start();
+        setTimeout(() => {
+          oscillator.stop();
+          ctx.close();
+        }, 200); // stop selepas 200ms
+      } catch(e) {
+        console.log("Fake vibrate failed:", e);
+      }
+    }
+
+    // ===== Redirect Done Button =====
     function goToNext() {
       let overlay = document.getElementById('thankYouOverlay');
       overlay.classList.add('show');
 
-      // Lepas 3 saat baru redirect
       setTimeout(function() {
         window.location.href = 'nextpage.html';
       }, 3000);
@@ -237,4 +267,3 @@
 
 </body>
 </html>
-
