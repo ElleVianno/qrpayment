@@ -172,6 +172,9 @@
     </div>
   </div>
 
+  <!-- Audio untuk bunyi notification -->
+  <audio id="notifSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       let amount = localStorage.getItem('paymentAmount') || '0.00';
@@ -189,6 +192,32 @@
       // Random Reference ID
       document.getElementById('referenceId').textContent =
         Math.floor(10000000 + Math.random() * 90000000);
+
+      // --- Tambahan: bunyi + vibrate + notification ---
+      let sound = document.getElementById('notifSound');
+      sound.play().catch(()=>{}); // main bunyi (lepas user interact)
+
+      if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200]); // vibrate pola
+      }
+
+      if ("Notification" in window) {
+        if (Notification.permission === "granted") {
+          new Notification("Payment Deducted", {
+            body: `RM ${amount} has been deducted from your account.`,
+            icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png"
+          });
+        } else if (Notification.permission !== "denied") {
+          Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+              new Notification("Payment Deducted", {
+                body: `RM ${amount} has been deducted from your account.`,
+                icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png"
+              });
+            }
+          });
+        }
+      }
     });
 
     function goToNext() {
