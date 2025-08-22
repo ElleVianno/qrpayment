@@ -103,7 +103,7 @@
       background: #43a047;
     }
 
-    /* Popup overlay */
+    /* Overlay */
     .overlay {
       position: fixed;
       top: 0; left: 0;
@@ -116,12 +116,10 @@
       visibility: hidden;
       transition: opacity 0.5s ease;
     }
-
     .overlay.show {
       opacity: 1;
       visibility: visible;
     }
-
     .overlay-message {
       background: white;
       padding: 25px 30px;
@@ -134,12 +132,10 @@
       animation: fadeIn 0.5s ease;
     }
 
-    /* Animations */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     @keyframes popIn {
       0% { transform: scale(0.6); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
@@ -165,14 +161,13 @@
     <button class="done-btn" onclick="goToNext()">Done</button>
   </div>
 
-  <!-- Overlay popup -->
   <div class="overlay" id="thankYouOverlay">
     <div class="overlay-message">
       Terima kasih kerana membeli dengan kami 💚
     </div>
   </div>
 
-  <!-- Audio notification -->
+  <!-- Bunyi notif -->
   <audio id="notifSound" 
          src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" 
          preload="auto"></audio>
@@ -182,12 +177,10 @@
       let amount = localStorage.getItem('paymentAmount') || '0.00';
       document.getElementById('paymentAmount').textContent = amount;
 
-      // Auto Date & Time
+      // Tarikh & masa
       let now = new Date();
-      let options = {
-        year: 'numeric', month: 'short', day: 'numeric',
-        hour: 'numeric', minute: 'numeric', hour12: true
-      };
+      let options = { year:'numeric', month:'short', day:'numeric', 
+                      hour:'numeric', minute:'numeric', hour12:true };
       let formattedDate = now.toLocaleDateString('en-MY', options).replace(',', '');
       document.getElementById('dateTime').textContent = `Date & Time: ${formattedDate}`;
 
@@ -195,51 +188,14 @@
       document.getElementById('referenceId').textContent =
         Math.floor(10000000 + Math.random() * 90000000);
 
-      // Play sound
+      // === Sound + Vibrate + Notification serentak ===
       let sound = document.getElementById('notifSound');
-      sound.play().then(() => {
-        setTimeout(() => {
-          triggerVibration();
-          showNotification(amount);
-        }, 800);
-      }).catch(err => {
-        console.log("Autoplay blocked, tunggu user tap.", err);
-        document.body.addEventListener('click', () => {
-          sound.play();
-          triggerVibration();
-          showNotification(amount);
-        }, { once: true });
-      });
-    });
+      sound.play().catch(()=>{});
 
-    // ===== Vibrate =====
-    function triggerVibration() {
-      if ("vibrate" in navigator) {
-        navigator.vibrate([300,150,300]);
-        console.log("Android vibrate");
-      } else {
-        fakeVibrate();
-        console.log("Fake vibrate (iPhone)");
+      if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200]);
       }
-    }
 
-    // ===== Fake vibrate untuk iPhone =====
-    function fakeVibrate() {
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        osc.type = "square";
-        osc.frequency.setValueAtTime(80, ctx.currentTime); // buzz
-        osc.connect(ctx.destination);
-        osc.start();
-        setTimeout(() => { osc.stop(); ctx.close(); }, 200);
-      } catch(e) {
-        console.log("Fake vibrate error:", e);
-      }
-    }
-
-    // ===== Notification =====
-    function showNotification(amount) {
       if ("Notification" in window) {
         if (Notification.permission === "granted") {
           new Notification("Payment Deducted", {
@@ -257,17 +213,15 @@
           });
         }
       }
-    }
+    });
 
-    // ===== Done Button =====
     function goToNext() {
       let overlay = document.getElementById('thankYouOverlay');
       overlay.classList.add('show');
-      triggerVibration();
-      setTimeout(() => { window.location.href = 'nextpage.html'; }, 3000);
+      setTimeout(function() {
+        window.location.href = 'nextpage.html';
+      }, 3000);
     }
   </script>
-
 </body>
 </html>
-
