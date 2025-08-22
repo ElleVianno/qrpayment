@@ -172,8 +172,10 @@
     </div>
   </div>
 
-  <!-- Audio untuk bunyi notification -->
-  <audio id="notifSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+  <!-- Audio untuk bunyi notification (bank style "ka-ching") -->
+  <audio id="notifSound" 
+         src="https://assets.mixkit.co/sfx/download/mixkit-coin-win-notification-1997.mp3" 
+         preload="auto"></audio>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -193,31 +195,33 @@
       document.getElementById('referenceId').textContent =
         Math.floor(10000000 + Math.random() * 90000000);
 
-      // --- Tambahan: bunyi + vibrate + notification ---
+      // --- Urutan: Bunyi → Vibrate → Notification ---
       let sound = document.getElementById('notifSound');
-      sound.play().catch(()=>{}); // main bunyi (lepas user interact)
+      sound.play().catch(()=>{});
 
-      if (navigator.vibrate) {
-        navigator.vibrate([200, 100, 200]); // vibrate pola
-      }
-
-      if ("Notification" in window) {
-        if (Notification.permission === "granted") {
-          new Notification("Payment Deducted", {
-            body: `RM ${amount} has been deducted from your account.`,
-            icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png"
-          });
-        } else if (Notification.permission !== "denied") {
-          Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-              new Notification("Payment Deducted", {
-                body: `RM ${amount} has been deducted from your account.`,
-                icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png"
-              });
-            }
-          });
+      setTimeout(() => {
+        if (navigator.vibrate) {
+          navigator.vibrate([200, 100, 200]);
         }
-      }
+
+        if ("Notification" in window) {
+          if (Notification.permission === "granted") {
+            new Notification("Payment Deducted", {
+              body: `RM ${amount} has been deducted from your account.`,
+              icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png"
+            });
+          } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+              if (permission === "granted") {
+                new Notification("Payment Deducted", {
+                  body: `RM ${amount} has been deducted from your account.`,
+                  icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png"
+                });
+              }
+            });
+          }
+        }
+      }, 1000); // 1 saat selepas bunyi
     });
 
     function goToNext() {
