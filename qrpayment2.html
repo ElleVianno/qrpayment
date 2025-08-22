@@ -172,7 +172,7 @@
     </div>
   </div>
 
-  <!-- Audio untuk bunyi notification -->
+  <!-- Audio notification -->
   <audio id="notifSound" 
          src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" 
          preload="auto"></audio>
@@ -182,7 +182,7 @@
       let amount = localStorage.getItem('paymentAmount') || '0.00';
       document.getElementById('paymentAmount').textContent = amount;
 
-      // Auto-generate Date & Time
+      // Auto Date & Time
       let now = new Date();
       let options = {
         year: 'numeric', month: 'short', day: 'numeric',
@@ -191,79 +191,83 @@
       let formattedDate = now.toLocaleDateString('en-MY', options).replace(',', '');
       document.getElementById('dateTime').textContent = `Date & Time: ${formattedDate}`;
 
-      // Random Reference ID
+      // Random Ref ID
       document.getElementById('referenceId').textContent =
         Math.floor(10000000 + Math.random() * 90000000);
 
-      // --- Urutan: Bunyi → Vibrate/Fake Vibrate → Notification ---
+      // Play sound
       let sound = document.getElementById('notifSound');
-      sound.play().catch(()=>{});
-
-      setTimeout(() => {
-        triggerVibration();
-
-        // Push Notification
-        if ("Notification" in window) {
-          if (Notification.permission === "granted") {
-            new Notification("Payment Deducted", {
-              body: `RM ${amount} has been deducted from your account.`,
-              icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png"
-            });
-          } else if (Notification.permission !== "denied") {
-            Notification.requestPermission().then(permission => {
-              if (permission === "granted") {
-                new Notification("Payment Deducted", {
-                  body: `RM ${amount} has been deducted from your account.`,
-                  icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png"
-                });
-              }
-            });
-          }
-        }
-      }, 1000); // 1 saat selepas bunyi
+      sound.play().then(() => {
+        setTimeout(() => {
+          triggerVibration();
+          showNotification(amount);
+        }, 800);
+      }).catch(err => {
+        console.log("Autoplay blocked, tunggu user tap.", err);
+        document.body.addEventListener('click', () => {
+          sound.play();
+          triggerVibration();
+          showNotification(amount);
+        }, { once: true });
+      });
     });
 
-    // ===== Fungsi Getar =====
+    // ===== Vibrate =====
     function triggerVibration() {
       if ("vibrate" in navigator) {
-        // Android (real vibrate)
-        navigator.vibrate([300, 150, 300]);
-        console.log("Android vibrate triggered");
+        navigator.vibrate([300,150,300]);
+        console.log("Android vibrate");
       } else {
-        // iPhone Safari (fake vibrate dengan bunyi buzz)
         fakeVibrate();
-        console.log("Fake vibrate (iPhone) triggered");
+        console.log("Fake vibrate (iPhone)");
       }
     }
 
-    // ===== Fake Vibrate untuk iPhone =====
+    // ===== Fake vibrate untuk iPhone =====
     function fakeVibrate() {
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = ctx.createOscillator();
-        oscillator.type = "square";
-        oscillator.frequency.setValueAtTime(60, ctx.currentTime); // buzz 60Hz
-        oscillator.connect(ctx.destination);
-        oscillator.start();
-        setTimeout(() => {
-          oscillator.stop();
-          ctx.close();
-        }, 200); // stop selepas 200ms
+        const osc = ctx.createOscillator();
+        osc.type = "square";
+        osc.frequency.setValueAtTime(80, ctx.currentTime); // buzz
+        osc.connect(ctx.destination);
+        osc.start();
+        setTimeout(() => { osc.stop(); ctx.close(); }, 200);
       } catch(e) {
-        console.log("Fake vibrate failed:", e);
+        console.log("Fake vibrate error:", e);
       }
     }
 
-    // ===== Redirect Done Button =====
+    // ===== Notification =====
+    function showNotification(amount) {
+      if ("Notification" in window) {
+        if (Notification.permission === "granted") {
+          new Notification("Payment Deducted", {
+            body: `RM ${amount} has been deducted from your account.`,
+            icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png"
+          });
+        } else if (Notification.permission !== "denied") {
+          Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+              new Notification("Payment Deducted", {
+                body: `RM ${amount} has been deducted from your account.`,
+                icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png"
+              });
+            }
+          });
+        }
+      }
+    }
+
+    // ===== Done Button =====
     function goToNext() {
       let overlay = document.getElementById('thankYouOverlay');
       overlay.classList.add('show');
-
-      setTimeout(function() {
-        window.location.href = 'nextpage.html';
-      }, 3000);
+      triggerVibration();
+      setTimeout(() => { window.location.href = 'nextpage.html'; }, 3000);
     }
   </script>
 
 </body>
 </html>
+
