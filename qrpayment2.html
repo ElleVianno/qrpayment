@@ -3,152 +3,182 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Payment Simulation</title>
+  <title>Payment Successful</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0; padding: 0;
+      margin: 0;
+      padding: 0;
       background: linear-gradient(135deg, #e0f7e9, #f4f4f4);
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
-    .container {
-      width: 90%; max-width: 340px;
-      background: white;
+    .success-container {
+      width: 90%;
+      max-width: 320px;
+      background-color: white;
       padding: 25px 18px;
-      border-radius: 15px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
       text-align: center;
-      display: none;
+      border-radius: 15px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.6s ease-in-out;
+      min-height: 400px;
+      display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 400px;
-      animation: fadeIn 0.6s ease-in-out;
     }
-    h2 { margin-bottom: 15px; }
-    button {
-      background: #4CAF50;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      width: 100%;
-    }
-    button:hover { background: #43a047; }
-
-    /* Success style */
     .success-icon {
-      width: 80px; height: 80px;
-      background: #4CAF50;
+      width: 80px;
+      height: 80px;
+      background-color: #4CAF50;
       border-radius: 50%;
-      display: flex; justify-content: center; align-items: center;
       margin: 0 auto 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: popIn 0.5s ease;
     }
     .success-icon:before {
       content: '✔';
       font-size: 40px;
       color: white;
     }
-    .amount { font-size: 22px; font-weight: bold; margin: 12px 0; }
-    .company-name { font-size: 16px; font-weight: bold; color: #4CAF50; margin-bottom: 18px; }
-    .transaction-details {
-      font-size: 14px; text-align: left; color: #555;
-      background: #f9f9f9; padding: 12px; border-radius: 8px; line-height: 1.6;
+    h2 {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 12px;
+      font-weight: bold;
     }
-    .transaction-details span { font-weight: bold; color: #333; }
-
+    .amount {
+      font-size: 22px;
+      font-weight: bold;
+      color: #222;
+      margin-bottom: 15px;
+    }
+    .company-name {
+      font-size: 16px;
+      font-weight: bold;
+      color: #4CAF50;
+      margin-bottom: 20px;
+    }
+    .transaction-details {
+      text-align: left;
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.6;
+      padding: 12px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+    .transaction-details span {
+      font-weight: bold;
+      color: #333;
+    }
+    .done-btn {
+      background: #4CAF50;
+      color: white;
+      padding: 12px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s ease;
+    }
+    .done-btn:hover {
+      background: #43a047;
+    }
     /* Overlay */
     .overlay {
       position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(0,0,0,0.6);
-      display: flex; justify-content: center; align-items: center;
-      opacity: 0; visibility: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
       transition: opacity 0.5s ease;
     }
-    .overlay.show { opacity: 1; visibility: visible; }
-    .overlay-message {
-      background: white; padding: 25px 30px;
-      border-radius: 12px; text-align: center;
-      font-size: 18px; font-weight: bold;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    .overlay.show {
+      opacity: 1;
+      visibility: visible;
     }
-
-    @keyframes fadeIn { from {opacity:0; transform:translateY(15px);} to {opacity:1; transform:translateY(0);} }
+    .overlay-message {
+      background: white;
+      padding: 25px 30px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
-
-  <!-- Scan & Pay screen -->
-  <div id="scanPay" class="container" style="display:flex;">
-    <h2>Scan & Pay</h2>
-    <p>Simulating payment from phone...</p>
-    <button onclick="completePayment()">I Have Paid</button>
-  </div>
-
-  <!-- Payment Success screen -->
-  <div id="paymentSuccess" class="container">
+  <div class="success-container">
     <div>
       <div class="success-icon"></div>
       <h2>Payment Successful</h2>
       <div class="amount">RM <span id="paymentAmount">0.00</span></div>
       <div class="company-name">KV PARADISE SDN.BHD</div>
       <div class="transaction-details">
-        <p>Reference ID: <span id="referenceId">00000000</span></p>
-        <p id="dateTime">Date & Time: </p>
+        <p>Reference ID: <span id="referenceId">81892704</span></p>
+        <p id="dateTime">Date & Time: 1 Sep 2024, 12:35 pm</p>
         <p>Transaction Type: <span>Scan & Pay</span></p>
       </div>
     </div>
-    <button onclick="goToNext()">Done</button>
+    <button class="done-btn" onclick="goToNext()">Done</button>
   </div>
 
-  <!-- Overlay -->
   <div class="overlay" id="thankYouOverlay">
     <div class="overlay-message">Terima kasih kerana membeli dengan kami 💚</div>
   </div>
 
-  <!-- Sound -->
-  <audio id="notifSound"
-    src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3"
-    preload="auto"></audio>
+  <!-- Bunyi notif -->
+  <audio id="notifSound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" preload="auto"></audio>
 
   <script>
-    function completePayment(){
-      localStorage.setItem("paymentStatus","paid");
-      localStorage.setItem("paymentAmount","25.00"); // contoh jumlah
-      alert("Payment marked as PAID ✅");
-      showSuccess();
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+      let amount = localStorage.getItem('paymentAmount') || '0.00';
+      document.getElementById('paymentAmount').textContent = amount;
 
-    function showSuccess(){
-      document.getElementById("scanPay").style.display="none";
-      document.getElementById("paymentSuccess").style.display="flex";
-
-      let amount = localStorage.getItem("paymentAmount") || '0.00';
-      document.getElementById("paymentAmount").textContent = amount;
-
-      // tarikh & masa
+      // Tarikh & masa
       let now = new Date();
-      let options = { year:'numeric', month:'short', day:'numeric', 
-                      hour:'numeric', minute:'numeric', hour12:true };
-      document.getElementById('dateTime').textContent = "Date & Time: " + 
-            now.toLocaleDateString('en-MY', options).replace(',', '');
+      let options = {
+        year:'numeric', month:'short', day:'numeric',
+        hour:'numeric', minute:'numeric', hour12:true
+      };
+      let formattedDate = now.toLocaleDateString('en-MY', options).replace(',', '');
+      document.getElementById('dateTime').textContent = `Date & Time: ${formattedDate}`;
 
-      // random ref ID
-      document.getElementById('referenceId').textContent =
-        Math.floor(10000000 + Math.random() * 90000000);
+      // Random Ref ID
+      document.getElementById('referenceId').textContent = Math.floor(10000000 + Math.random() * 90000000);
 
-      // sound + vibrate + notif
-      let sound = document.getElementById("notifSound");
+      // === Sound + Vibrate + Notification serentak ===
+      let sound = document.getElementById('notifSound');
       sound.play().catch(()=>{});
 
-      if (navigator.vibrate) navigator.vibrate([200,100,200]);
+      if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200]);
+      }
 
       if ("Notification" in window) {
         if (Notification.permission === "granted") {
@@ -157,21 +187,24 @@
             icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png"
           });
         } else if (Notification.permission !== "denied") {
-          Notification.requestPermission().then(p=>{
-            if (p==="granted"){
+          Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
               new Notification("Payment Deducted", {
-                body:`RM ${amount} has been deducted from your account.`,
-                icon:"https://cdn-icons-png.flaticon.com/512/190/190411.png"
+                body: `RM ${amount} has been deducted from your account.`,
+                icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png"
               });
             }
           });
         }
       }
-    }
+    });
 
-    function goToNext(){
-      document.getElementById("thankYouOverlay").classList.add("show");
-      setTimeout(()=>{ window.location.href="nextpage.html"; },3000);
+    function goToNext() {
+      let overlay = document.getElementById('thankYouOverlay');
+      overlay.classList.add('show');
+      setTimeout(function() {
+        window.location.href = 'nextpage.html';
+      }, 3000);
     }
   </script>
 </body>
